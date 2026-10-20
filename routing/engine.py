@@ -357,4 +357,5 @@ def _check_expected_speeds(base: CustomModel, edges: dict[str, EdgeMeta]) -> Non
                   if not math.isclose(compiled.evaluate(e).speed_kmh, e.speed_kmh, rel_tol=1e-9)]
     if mismatched:
         raise ValueError(f"{len(mismatched)} edges (e.g. {mismatched[0]}) have a speed_kmh that differs from "
-                         f"the baseline's; build it with models.expected_speed_kmh()")
+                         f"the baseline's; build it with models.free_flow_speed_kmh()")
+

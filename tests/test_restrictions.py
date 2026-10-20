@@ -135,7 +135,7 @@ class OsmImportTests(unittest.TestCase):
         self.assertEqual(e["102:4:5"].max_speed_kmh, 100)       # divided (oneway) trunk
         self.assertEqual(e["104:6:7"].max_speed_kmh, 40)        # maxspeed:forward
         self.assertEqual(e["104:7:6"].max_speed_kmh, 60)        # maxspeed:backward
-        self.assertEqual(e["105:7:8"].speed_kmh, 20)            # legal limit below uniform speed
+        self.assertEqual(e["105:7:8"].speed_kmh, 15)            # living-street class speed (15) is below the sign (20)
 
     def test_vehicle_specific_limits_access_and_tolls(self):
         self.assertEqual(self.bike["101:3:4"].max_speed_kmh, 80)          # motorcycle expressway limit
@@ -153,7 +153,7 @@ class OsmImportTests(unittest.TestCase):
         self.assertEqual(e["103:5:6"].end_features, frozenset({"toll_booth"}))
         self.assertEqual((e["103:5:6"].end_delay_s, self.bike["103:5:6"].end_delay_s), (20, 5))
         self.assertTrue(e["100:1:2"].traffic_calming)           # bump at node 2
-        self.assertEqual(e["100:1:2"].speed_kmh, 27)            # 30 x 0.9
+        self.assertEqual(e["100:1:2"].speed_kmh, 36)            # primary 40 x 0.9
         self.assertFalse(e["100:2:3"].traffic_calming)
 
     def test_turn_restrictions_per_vehicle(self):

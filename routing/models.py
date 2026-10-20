@@ -7,7 +7,7 @@ from enum import Enum
 from typing import Union
 
 from .road_classes import UNIFORM_SPEED_KMH, RoadClass
-from .vehicles import SPEED_BREAKER_FACTOR, VehicleType
+from .vehicles import SPEED_BREAKER_FACTOR, VehicleType, VehicleProfile
 
 
 # --------------------------------------------------------------------------- #
@@ -71,6 +71,16 @@ def expected_speed_kmh(max_speed_kmh: float | None, uniform_kmh: float = UNIFORM
                        traffic_calming: bool = False) -> float:
     """min(uniform speed, legal limit), slightly lower where there is a speed breaker."""
     speed = uniform_kmh if max_speed_kmh is None else min(uniform_kmh, max_speed_kmh)
+    return speed * SPEED_BREAKER_FACTOR if traffic_calming else speed
+
+
+def free_flow_speed_kmh(road_class: RoadClass, max_speed_kmh: float | None, profile: VehicleProfile,
+                        traffic_calming: bool = False) -> float:
+    """min(this vehicle's free-flow speed for the road class, legal limit), lower at speed breakers.
+    Must equal what baseline_model(profile) evaluates to for the same edge."""
+    table = profile.free_flow_kmh
+    base = table.get(road_class, table[RoadClass.OTHER])
+    speed = base if max_speed_kmh is None else min(base, max_speed_kmh)
     return speed * SPEED_BREAKER_FACTOR if traffic_calming else speed
 
 

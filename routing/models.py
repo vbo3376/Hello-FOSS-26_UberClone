@@ -307,3 +307,4 @@ class RouteResult:
     toll_segments: list[str] = field(default_factory=list)
     point_delay_s: float = 0.0   # signals, toll booths, level crossings (included in eta_s)
     turn_s: float = 0.0          # turn costs (included in eta_s)
+    uncalibrated_eta_s: float | None = None  # eta_s before per-bucket calibration; record THIS with record_trip_eta

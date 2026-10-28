@@ -208,7 +208,7 @@ def service(short_kw=None, zones=()):
     edges = [_edge("AS", "A", "S", **short_kw), _edge("SC", "S", "C", **short_kw),
              _edge("AL", "A", "L"), _edge("LC", "L", "C")]
     return RoutingService(LocalAStarRouter(RoadGraph(NODES, edges)), {e.segment_id: e for e in edges},
-                          buckets=BUCKETS, zones=list(zones))
+                          buckets=BUCKETS, zones=list(zones), congestion_prior=None)
 
 
 def via(svc, **kw):
@@ -249,12 +249,12 @@ class RestrictionRoutingTests(unittest.TestCase):
     def test_speed_limit_below_uniform_speed(self):
         svc = service({"max_speed_kmh": 10.0, "speed_kmh": expected_speed_kmh(10.0)})
         ev = CompiledModel(svc.model_for_request(NOW)).evaluate(svc.edges["AS"])
-        self.assertEqual(ev.speed_kmh, 10)
+        self.assertEqual(ev.speed_kmh, 10.0)
         self.assertEqual(via(svc), "AL")
 
     def test_speed_limit_above_uniform_speed_changes_nothing(self):
         svc = service({"max_speed_kmh": 100.0})
-        self.assertEqual(CompiledModel(svc.model_for_request(NOW)).evaluate(svc.edges["AS"]).speed_kmh, 30)
+        self.assertEqual(CompiledModel(svc.model_for_request(NOW)).evaluate(svc.edges["AS"]).speed_kmh, 30.0)
 
     def test_inconsistent_expected_speed_rejected(self):
         with self.assertRaises(ValueError):
